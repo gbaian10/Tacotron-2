@@ -37,14 +37,14 @@ def norm_data(args):
 
 	print('Selecting data folders..')
 	supported_datasets = ['LJSpeech-1.0', 'LJSpeech-1.1', 'M-AILABS', 'THCHS-30']
-	if args.dataset not in supported_datasets:
+	if args.dataset not in supported_datasets: # 檢查dataset是否吻合
 		raise ValueError('dataset value entered {} does not belong to supported datasets: {}'.format(
 			args.dataset, supported_datasets))
 
 	if args.dataset.startswith('LJSpeech'):
 		return [os.path.join(args.base_dir, args.dataset)]
 
-	if args.dataset.startswith('THCHS-30'):
+	if args.dataset.startswith('THCHS-30'): # input資料夾
 		return [os.path.join(args.base_dir, 'data_thchs30')]
 
 	if args.dataset == 'M-AILABS':
@@ -79,15 +79,15 @@ def norm_data(args):
 
 
 def run_preprocess(args, hparams):
-	input_folders = norm_data(args)
-	output_folder = os.path.join(args.base_dir, args.output)
+	input_folders = norm_data(args) #回傳input資料夾的字串list 預設= ['data_thchs30']
+	output_folder = os.path.join(args.base_dir, args.output) #預設在同目錄下的 training_data 資料夾 | https://www.cnblogs.com/an-ning0920/p/10037790.html
 
 	preprocess(args, input_folders, output_folder, hparams)
 
 
 def main():
 	print('initializing preprocessing..')
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser() # 主要功能就是加入使用程式時候，後面參數的設定 | https://docs.python.org/zh-tw/3/howto/argparse.html
 	parser.add_argument('--base_dir', default='')
 	parser.add_argument('--hparams', default='',
 		help='Hyperparameter overrides as a comma-separated list of name=value pairs')
@@ -101,12 +101,12 @@ def main():
 	parser.add_argument('--n_jobs', type=int, default=cpu_count())
 	args = parser.parse_args()
 
-	modified_hp = hparams.parse(args.hparams)
+	modified_hp = hparams.parse(args.hparams) # Tensorflow的HParms class  | http://tensorflow.biotecan.com/python/Python_1.8/tensorflow.google.cn/api_docs/python/tf/contrib/training/HParams.html
 
-	assert args.merge_books in ('False', 'True')
+	assert args.merge_books in ('False', 'True') # assert為False時會立即中斷程式 | https://openhome.cc/Gossip/CodeData/PythonTutorial/AssertDocTestPy3.html
 
 	run_preprocess(args, modified_hp)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':   # __name__內建變數 | http://blog.castman.net/%E6%95%99%E5%AD%B8/2018/01/27/python-name-main.html
 	main()
